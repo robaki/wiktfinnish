@@ -1,3 +1,7 @@
+[I've forked the original repo to fix the documentation.
+There original one isn't clear, contains some errors and
+the project looks abandoned]
+
 # Wiktfinnish - Inflecting Finnish words
 
 This is a Python module for inflecting Finnish words (verb inflection,
@@ -7,9 +11,9 @@ Wiktionary-compatible declensions and conjugations.
 ## Overview
 
 This Python module is intended for generating inflected forms of
-Finnish words in Wiktionary.  It is most conveniently used with
+Finnish words in Wiktionary. It is most conveniently used with
 dictionaries extracted using the
-[wiktextract](https://github.com/tatuylonen/wiktextract).  The
+[wiktextract](https://github.com/tatuylonen/wiktextract). The
 intention is that this module can be used to generate the complete set
 of inflected forms for any Finnish word in Wiktionary - including
 comparisons, possessive suffixes, clitics, and nominally inflected
@@ -19,8 +23,10 @@ verb forms.
 
 ### Installing
 
-To install ``wiktwikfinnish``, use ``pip3`` (or ``pip``, as
-appropriate), or clone the repository and install from the source:
+~~To install ``wiktwikfinnish``, use ``pip3`` (or ``pip``, as
+appropriate), or~~ (pip doesn't work anymore)
+
+Clone the repository and install from the source:
 
 ```
 git clone https://github.com/tatuylonen/wiktfinnish.git
@@ -51,35 +57,49 @@ nosetests
 ### Generating an inflected word form
 
 The basic way to generate an inflected word form is to use the following
-code snippet.
+code snippet:
 
 ```
 import wiktfinnish
 
-results = wiktfinnish.inflect(name, args, form)
+# example verb
+args = {'1': 'tisk', '2': '', '3': '', '4': 'a', 'template_name': 'fi-conj-salata'}
+verb_form = 'pres-3sg' # the list of available verb forms: wiktfinnish.formnames.VERB_FORMS
+form = (verb_form, '', '', '', '')
+
+wiktfinnish.inflect(args, form)
+
+
+# example nominal 
+args = {'1': 'koiv', '2': '', '3': '', '4': 'u', '5': 'a', 'template_name': 'fi-decl-valo'}
+case = 'ill-sg' # the list of available cases: wiktfinnish.formnames.CASE_FORMS
+form = ('', '', case, '', '')
+
+wiktfinnish.inflect(args, form)
+
+
+# example adjective (uses both case and comparative)
+args = {'pos': 'adj', '1': 'mielenkiintoi', '2': 'a', 'template_name': 'fi-decl-nainen'}
+comp = 'sup' # the list of available comparative forms: wiktfinnish.formnames.COMPARATIVE_FORMS
+case = 'ill-sg' # the list of available cases: wiktfinnish.formnames.CASE_FORMS
+form = ('', comp, case, '', '')
+
+wiktfinnish.inflect(args, form)
 ```
+
+Where `form` is a 5-tuple which specifies which form to generate: `(verbform, comparison, case, possessive, clitic)` -- more information below.
+
+The `args` is an inflection template specific to a given word.
+These templates can be extracted using wiktextract or downloaded from this project:
+```https://github.com/tragram/finnish-inflexion-drill/tree/master/data/wikt.words```
+(click download on the right-hand side, the file is ~60MiB). 
+Each row contains information about one word in json format. The inflection template for each word
+is stored under `row['conjugation'][0]`. There may be more than 1 template per word, the 0th is probably the most common one.
 
 The ``inflect`` function returns a list of strings, which are the
 alternative forms generated for that word form.  The preferred, or
 most common form should be first in the list and rare/archaic examples
 later.
-
-The name and arguments specify the conjugation/declension for the word.  That includes specifying the word to be inflected.  See below for details.
-
-The form is a 5-tuple ``(verbform, comparison, case, possessive,
-clitic)``, that specifies the inflected form to be generated.  It is described in detail below.
-
-### Specifying the conjugation/declension
-
-In the API, each word to be inflection must be specified by a
-conjugation (verbs) or declination (nominals) specification.  The
-specification is basically the arguments of the ``{{fi-decl-xyx}}`` or
-`{{fi-conj-xyz}}`` template from Wiktionary, encoded into a Python
-dictionary.  In the API, this template will be called ``args``.
-Additionally, the API requies the name of the template to be supplied
-as the ``name`` argument.  These are readily available in the proper
-format if the dictionary has been extracted using ``wiktextract`` (see
-below).
 
 ### Specifying the desired word form
 
