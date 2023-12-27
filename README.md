@@ -1,5 +1,5 @@
 [I've forked the original repo to fix the documentation.
-There original one isn't clear, contains some errors and
+The original one isn't clear, contains some errors and
 the project looks abandoned]
 
 # Wiktfinnish - Inflecting Finnish words
